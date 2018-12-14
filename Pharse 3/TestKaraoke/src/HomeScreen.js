@@ -6,6 +6,7 @@ import YTSearch from 'youtube-api-search';
 import AppHeader from './components/AppHeader';
 import SearchYoutube from './components/SearchYoutube';
 import VideoList from './components/VideoList';
+import { WebBrowser } from 'expo';
 StatusBar.setHidden(true);
 const API_KEY="AIzaSyBdbtMyB2J3wjA3SIrpvBTwL4UrCpXs1uc";
 
@@ -140,9 +141,9 @@ ListViewItemSeparator = () => {
  
           renderRow={(rowData) =>
           <TouchableOpacity onPress={() => {
-                this.props.navigation.navigate('YoutubePlayer',{
-                videoId:rowData.KEYYOUTUBE
-                })
+              WebBrowser.openBrowserAsync(
+                `https://www.youtube.com/embed/${rowData.KEYYOUTUBE}`
+            );
             }}>
            <View style={styles.container}>
             <Text style={{fontWeight:'bold',fontSize: 20,color:'red'}}>Mã bài hát:{rowData.MABH}</Text>

@@ -9,11 +9,12 @@ const WatchButton = ({ videoId,navigate2 }) => (
     icon={{ name: 'play-arrow' }}
     containerViewStyle={{ marginTop: 10 }}
     backgroundColor="#E62117"
-    onPress={() => navigate2('YoutubePlayer',{
-      videoId:videoId
-    }) }
-      
-    
+    onPress={() => {
+    WebBrowser.openBrowserAsync(
+      `https://www.youtube.com/embed/${videoId}`
+    );
+   }   
+  }
   />
 );
 
