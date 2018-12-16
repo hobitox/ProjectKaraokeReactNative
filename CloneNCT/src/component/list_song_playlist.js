@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,TouchableOpacity,Image} from 'react-native';
 
-export default class ListSongNgang extends Component<Props>{
+export default class ListSongPlayList extends Component<Props>{
 	constructor(props) {
 	  super(props);
 	
@@ -11,7 +11,7 @@ export default class ListSongNgang extends Component<Props>{
 	render(){
 		return(
 
-			<TouchableOpacity onPress={()=> {this.props.onPress(this.props.item)}}>
+			<TouchableOpacity onPress={()=> {this.props.onPress(this.props.itemkey)}}>
 				
 				<View style={styles.SongItemContainer}>
 					<Image
@@ -40,9 +40,7 @@ const styles = StyleSheet.create({
     height:120
   },
   SongItemContainer:{
-  	flexDirection:'column',
-  	width: 120,
-    height: 200,
+  	flexDirection:'row'
   },
   TextContent:{
   	flexDirection:'column'
@@ -53,5 +51,5 @@ const styles = StyleSheet.create({
   },
   CaSi:{
   	color:'black'
-  }
+  },
 });

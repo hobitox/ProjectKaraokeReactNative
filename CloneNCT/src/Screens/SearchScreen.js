@@ -8,12 +8,16 @@ import ListVideoNgang from '../component/list_video_ngang.js'
 import Helper from '../Helper.js'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import SongPlayer from '../component/SongPlayer.js'
+
+import {connect} from 'react-redux'
+
+
 var Sound = require('react-native-sound');
 
 var input='';
 var whoosh;
 
-export default class SearchScreen extends Component<Props> {
+class SearchScreen extends Component<Props> {
 
 
   
@@ -27,7 +31,7 @@ export default class SearchScreen extends Component<Props> {
       searchSongList:[],
       searchVideoList:[],
       searchKaraokeList:[],
-      searchPlayListList:[],
+      searchPlaylistList:[],
 
       myText: 'I\'m ready to get swiped!',
       gestureName: 'none',
@@ -40,19 +44,7 @@ export default class SearchScreen extends Component<Props> {
         'karaoke':false,
         'playlist':false,
       },
-
-
-
-      SongPlayerState:{
-        item:{
-          avatar:'',
-          title:'',
-          singer_name:'',
-        },
-        mp3Source:'',
-      },
       
-
 
       
     };
@@ -62,9 +54,55 @@ export default class SearchScreen extends Component<Props> {
     this.playVideo=this.playVideo.bind(this);
     this.getSearchKaraokeRespone=this.getSearchKaraokeRespone.bind(this);
     this.playKaraoke=this.playKaraoke.bind(this);
+    this.getSearchPlaylistRespone=this.getSearchPlaylistRespone.bind(this);
+    this.playPlaylist=this.playPlaylist.bind(this);
+    this.setCurrentTab=this.setCurrentTab.bind(this);
     
   }
 
+
+  setCurrentTab(tab){
+    this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':false,
+        'karaoke':false,
+        'playlist':false,
+      },
+    });
+    switch (tab) {
+      case 'all':
+        this.setState({currentTab:
+          {
+            all:true,
+          }});
+        break;
+      case 'song':
+        this.setState({currentTab:{
+          song:true,
+        }});
+        break;
+      case 'video':
+        this.setState({currentTab:{
+          video:true,
+        }});
+        break;
+      case 'karaoke':
+        this.setState({currentTab:{
+          karaoke:true,
+        }});
+        break;
+      case 'playlist':
+        this.setState({currentTab:{
+          playlist:true,
+        }});
+        break;
+      default:
+        // statements_def
+        break;
+    }
+  }
   async getSearchSongRespone() {
 
     //console.log('input: ',input);
@@ -99,32 +137,64 @@ export default class SearchScreen extends Component<Props> {
 
     
   }
+  async getSearchPlaylistRespone() {
 
-  returnWhoosh(whooshreturn)
-  {
-    whoosh=whooshreturn;
-    console.log('already get whoosh:',whoosh);
+
+    this.setState({searchPlaylistList:[]});
+    //console.log('Helper tra ve',Helper.getSearchKaraokeRespone(this.state.input));
+    if(input!='')
+    {
+      this.setState({searchPlaylistList:await Helper.getSearchPlaylistRespone(input)});
+    }
+    //console.log(this.state.searchPlaylistList);
+
+    
   }
+
+
   async playSong(item){
     
-    console.log('Pressed Play Song',item.title);
+    //console.log('Pressed Play Song',item);
     //this.setState({
     //  SongPlayerState:{
     //    item:item,
     //    mp3Source:await Helper.getMp3Source(item.link),
     //}});
     //console.log(this.state.SongPlayerState);
-    this.props.navigation.navigate('NewPlayer',{'item':item,'mp3Source':await Helper.getMp3Source(item.link),returnWhoosh:this.returnWhoosh.bind(this)});
+    await Helper.getMp3Source(item.link)
+    .then(returnResult=>this.props.dispatch({type:'ADD_SONG_TO_FIRST_PLAYLIST',item:item,mp3Source:returnResult}))
+    .then(returnResult=>console.log('returnResult: ',returnResult));
+
+    //this.props.navigation.navigate('Mp3Player');
+    //this.props.dispatch({type:'ADD_SONG_TO_PLAYLIST',item:item,mp3Source:Helper.getMp3Source(item.link)});
+    //console.log(this.props.state);
+    this.props.dispatch({type:'LOAD_SONG'});
+
+    //console.log('whoosh: ',this.props.whoosh);
+    //console.log('state: ',this.props.state);
+    //this.props.dispatch({type:'START_PLAY'});
+
+
+    //this.props.navigation.navigate('NewPlayer',{'item':item,'mp3Source':await Helper.getMp3Source(item.link),returnWhoosh:this.returnWhoosh.bind(this)});
+  }
+  async playPlaylist(item){
+    
+    await Helper.getSongFromPlaylist(item.link)
+    .then(returnResult=> this.props.dispatch({type:'ADD_PLAYLIST',playList:returnResult}));
+
+
+    this.props.dispatch({type:'LOAD_SONG'});
+    //this.props.navigation.navigate('NewPlayer',{'item':item,'mp3Source':await Helper.getMp3Source(item.link),returnWhoosh:this.returnWhoosh.bind(this)});
   }
   async playVideo(item){
     
-    console.log('Pressed Play Video',item.title);
+    //console.log('Pressed Play Video',item.title);
     
     this.props.navigation.navigate('VideoPlayer',{'item':item,'videoSource':await Helper.getVideoSource(item.link)});
   }
   async playKaraoke(item){
     
-    console.log('Pressed Play Karaoke',item.title);
+    //console.log('Pressed Play Karaoke',item.title);
     
     this.props.navigation.navigate('VideoPlayer',{'item':item,'videoSource':await Helper.getVideoSource(item.link)});
   }
@@ -154,6 +224,8 @@ export default class SearchScreen extends Component<Props> {
         'all':true,
         'song':false,
         'video':false,
+        'karaoke':false,
+        'playlist':false,
         }
       });
     }
@@ -164,6 +236,32 @@ export default class SearchScreen extends Component<Props> {
         'all':false,
         'song':true,
         'video':false,
+        'karaoke':false,
+        'playlist':false,
+        }
+      });
+    }
+    if(this.state.currentTab.karaoke)
+    {
+      this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':true,
+        'karaoke':false,
+        'playlist':false,
+        }
+      });
+    }
+    if(this.state.currentTab.playlist)
+    {
+      this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':false,
+        'karaoke':true,
+        'playlist':false,
         }
       });
     }
@@ -182,9 +280,48 @@ export default class SearchScreen extends Component<Props> {
         'all':false,
         'song':false,
         'video':true,
+        'karaoke':false,
+        'playlist':false,
         }
       });
     }
+    if(this.state.currentTab.video)
+    {
+      this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':false,
+        'karaoke':true,
+        'playlist':false,
+        }
+      });
+    }
+    if(this.state.currentTab.karaoke)
+    {
+      this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':false,
+        'karaoke':false,
+        'playlist':true,
+        }
+      });
+    }
+    if(this.state.currentTab.playlist)
+    {
+      this.setState({
+      currentTab:{
+        'all':true,
+        'song':false,
+        'video':false,
+        'karaoke':false,
+        'playlist':false,
+        }
+      });
+    }
+
     
   }
  
@@ -226,21 +363,24 @@ export default class SearchScreen extends Component<Props> {
 
             config={config}
             style={{
-              flex: 1,
+              flex: 2,
               backgroundColor: this.state.backgroundColor
             }}
             >
             <View>
               <TextInput 
+                placehoder="Tìm kiếm..."
                 onChangeText={(inputtext) => input=inputtext}
+                style={{color:'black',fontWeight: 'bold'}}
                 //value={input}
                 />
               <Button 
                 onPress={()=>{
-                  console.log('Button search pressed');
+                  //console.log('Button search pressed');
                   this.getSearchSongRespone();
                   this.getSearchVideoRespone();
                   this.getSearchKaraokeRespone();
+                  this.getSearchPlaylistRespone();
                   
                 }}
                 title="Search"
@@ -258,32 +398,116 @@ export default class SearchScreen extends Component<Props> {
                   }}>
                 
                   <View style={this.state.currentTab.all?styles.tabViewChosen:styles.tabView}>
-                    <TouchableOpacity onPress={()=>this.setState({currentTab:{all:true}})}>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('all')}>
                       <Text>Tất cả</Text>
                     </TouchableOpacity>
                   </View>
                 
                 
                   <View style={this.state.currentTab.song?styles.tabViewChosen:styles.tabView}>
-                    <TouchableOpacity onPress={()=>this.setState({currentTab:{song:true}})}>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('song')}>
                       <Text>Bài hát</Text>
                     </TouchableOpacity>
                   </View>
                 
                 
                   <View style={this.state.currentTab.video?styles.tabViewChosen:styles.tabView}>
-                    <TouchableOpacity onPress={()=>this.setState({currentTab:{video:true}})}>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('video')}>
                       <Text>Video</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={this.state.currentTab.karaoke?styles.tabViewChosen:styles.tabView}>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('karaoke')}>
+                      <Text>Karaoke</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={this.state.currentTab.playlist?styles.tabViewChosen:styles.tabView}>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('playlist')}>
+                      <Text>PlayList</Text>
                     </TouchableOpacity>
                   </View>
                 
 
                 </View>
+                {this.props.isShowMiniPlayer&&
+                <View style={{left:0}}>
+                    <View style={{flexDirection:'row'}}>
+                      <Button 
+                      onPress={()=>{
+                        whoosh=this.props.whoosh;
+                        //console.log('Button Start pressed');
+                        whoosh.play();
+                        
+                      }}
+                      title="Start"
+                      color="#841584"
+                      />
+                      <Button 
+                      onPress={()=>{
+                        whoosh=this.props.whoosh;
+                        //console.log('Button Pause pressed');
+                        whoosh.pause();
+                        
+                      }}
+                      title="Pause"
+                      color="#841584"
+                      />
+                      <Button 
+                      onPress={()=>{
+                        whoosh=this.props.whoosh;
+                        //console.log('Button Stop pressed');
+                        whoosh.stop();
+                        
+                      }}
+                      title="Stop"
+                      color="#841584"
+                      />
+                      <Button 
+                      onPress={()=>{
+                        whoosh=this.props.whoosh;
+                        //console.log('whoosh: ',whoosh);
+                        //console.log('state:', this.props.state);
+                        
+                        
+                      }}
+                      title="GET INFO"
+                      color="#841584"
+                      />
+                      <Button 
+                      onPress={()=>{
+                        this.props.dispatch({type:'NEXT'});
+                        this.props.dispatch({type:'LOAD_SONG'});
+                      }}
+                      title="NEXT"
+                      color="#841584"
+                      />
+                      <Button 
+                      onPress={()=>{
+                        this.props.navigation.navigate('Mp3Player');
+                        
+                      }}
+                      title="ZOOM"
+                      color="#841584"
+                      />
+                    </View>
+                  </View>
+                }
+                <TouchableOpacity onPress = {() => {this.props.dispatch({type:'CHANGE_MINI_PLAYER'})}}>
+                <View style = {{backgroundColor: '#841584', alignItems: 'center', 
+                                justifyContent: 'center',heiht:10}}
+                       >
+                    <Text style = {{color: 'white'}}>...</Text>
+                </View>
+                </TouchableOpacity>
 
+
+
+
+                 
                 {this.state.currentTab.all&&
                   <ScrollView>
                     <View>
-                        <Text>Bài hát</Text>
+                        <Text style={styles.labelText}>Bài hát</Text>
                         <FlatList
                         horizontal={true}
                         data={this.state.searchSongList}
@@ -294,7 +518,7 @@ export default class SearchScreen extends Component<Props> {
                         </FlatList>
                     </View>
                     <View>
-                        <Text>Video</Text>
+                        <Text style={styles.labelText}>Video</Text>
                         <FlatList
                         horizontal={true}
                         data={this.state.searchVideoList}
@@ -305,13 +529,24 @@ export default class SearchScreen extends Component<Props> {
                         </FlatList>
                     </View>
                     <View>
-                        <Text>Karaoke</Text>
+                        <Text style={styles.labelText}>Karaoke</Text>
                         <FlatList
                         horizontal={true}
                         data={this.state.searchKaraokeList}
                         keyExreactor={(x, i)=>i}
                         renderItem={({item})=>
                           <ListVideoNgang item={item} key={i} onPress={this.playKaraoke}/>
+                        }>        
+                        </FlatList>
+                    </View>
+                    <View>
+                        <Text style={styles.labelText}>PlayList</Text>
+                        <FlatList
+                        horizontal={true}
+                        data={this.state.searchPlaylistList}
+                        keyExreactor={(x, i)=>i}
+                        renderItem={({item})=>
+                          <ListVideoNgang item={item} key={i} onPress={this.playPlaylist}/>
                         }>        
                         </FlatList>
                     </View>
@@ -348,40 +583,42 @@ export default class SearchScreen extends Component<Props> {
                   </View>
                   
                 }
+                {this.state.currentTab.karaoke&&
+                  <View>
+                    
+                    <View>
+                      <FlatList
+                    data={this.state.searchKaraokeList}
+                    keyExreactor={(x, i)=>i}
+                    renderItem={({item})=>
+                      <ListSong item={item} key={i} onPress={this.playVideo}/>
+                    }>        
+                    </FlatList>
+                    </View>
+                    
+                  </View>
+                  
+                }
+                {this.state.currentTab.playlist&&
+                  <View>
+                    
+                    <View>
+                      <FlatList
+                    data={this.state.searchPlaylistList}
+                    keyExreactor={(x, i)=>i}
+                    renderItem={({item})=>
+                      <ListSong item={item} key={i} onPress={this.playPlaylist}/>
+                    }>        
+                    </FlatList>
+                    </View>
+                    
+                  </View>
+                  
+                }
               </View>
 
 
-              <View style={{bottom:0}}>
-                <View style={{flexDirection:'row'}}>
-                  <Button 
-                  onPress={()=>{
-                    console.log('Button Start pressed');
-                    whoosh.play();
-                    
-                  }}
-                  title="Start"
-                  color="#841584"
-                  />
-                  <Button 
-                  onPress={()=>{
-                    console.log('Button Pause pressed');
-                    whoosh.pause();
-                    
-                  }}
-                  title="Pause"
-                  color="#841584"
-                  />
-                  <Button 
-                  onPress={()=>{
-                    console.log('Button Stop pressed');
-                    whoosh.stop();
-                    
-                  }}
-                  title="Stop"
-                  color="#841584"
-                  />
-                </View>
-              </View> 
+              
 
             
           </GestureRecognizer>
@@ -398,6 +635,22 @@ export default class SearchScreen extends Component<Props> {
  
   }
 }
+
+
+function mapStateToProps(state)
+{
+  return{ 
+    playList:state.playList,
+    whoosh:state.whoosh,
+    isPlaying:state.isPlaying,
+    currentSongNum:state.currentSongNum,
+    isPaused:state.isPaused,
+    state:state,
+    isShowMiniPlayer:state.isShowMiniPlayer,
+    }
+}
+
+export default connect(mapStateToProps)(SearchScreen);
 const styles = StyleSheet.create({
   scene: {
     flex: 1,
@@ -412,5 +665,10 @@ const styles = StyleSheet.create({
     borderWidth:5,
     backgroundColor: 'blue',
 
-  }
+  },
+  labelText: {
+    color:'red',
+    fontWeight: 'bold',
+
+  },
 });
