@@ -1,5 +1,7 @@
 import {HomeScreen} from "./HomeScreen.js" 
 import {SettingScreen} from "./SettingScreen.js" 
+import {IntroScreen} from "./IntroScreen.js" 
+
 import {YoutubePlayerScreen} from "./YoutubePlayerScreen.js"
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -22,9 +24,9 @@ export const AppNavigator = createStackNavigator(
   				}},
             	Setting:{screen:SettingScreen,
     			navigationOptions:{
-			    tabBarLabel:'Settings',
+			    tabBarLabel:'Search Online',
 			    tabBarIcon:({tintcolor})=>(
-        		<Icon name="ios-settings" color={tintcolor} size={24}></Icon>
+        		<Icon name="ios-search" color={tintcolor} size={24}></Icon>
       			)
     			}}
 			}
@@ -32,9 +34,11 @@ export const AppNavigator = createStackNavigator(
                 tabBarPosition: "bottom"
              })
     }, 
-    YoutubePlayer: YoutubePlayerScreen ,
+    YoutubePlayer: YoutubePlayerScreen,
+    Intro: IntroScreen,
   },
-  {
+   
+  { 
     initialRouteName: "MainScreen",
     headerMode: "none"
   }

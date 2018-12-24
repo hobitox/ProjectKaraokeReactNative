@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button,StatusBar,ListView, ScrollView, SearchBar,ActivityIndicator,Alert,TextInput,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button,StatusBar,ListView, ScrollView, SearchBar,ActivityIndicator,Alert,TextInput,TouchableOpacity,AsyncStorage } from 'react-native';
 import {TabNavigator,createBottomTabNavigator} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import YTSearch from 'youtube-api-search';
@@ -7,6 +7,7 @@ import AppHeader from './components/AppHeader';
 import SearchYoutube from './components/SearchYoutube';
 import VideoList from './components/VideoList';
 import { WebBrowser } from 'expo';
+
 StatusBar.setHidden(true);
 const API_KEY="AIzaSyBdbtMyB2J3wjA3SIrpvBTwL4UrCpXs1uc";
 
@@ -27,7 +28,25 @@ export class HomeScreen extends React.Component {
    
       this.arrayholder = [] ;
     }
-
+    componentWillMount()
+    { 
+      //this.props.navigation.navigate('Intro');
+      AsyncStorage.getItem('isNotFirstTime', (err, result) => {
+      if (err) {
+        console.log('err',err);
+        this.props.navigation.navigate('Intro');
+      } else {
+        console.log('result',result);
+        if (result == 'true') {
+          
+          //this.props.navigation.navigate('Intro');  
+        } else {
+          this.props.navigation.navigate('Intro');
+        }
+      }
+    });
+      
+    }
     componentDidMount() {
  
       return fetch('https://api.myjson.com/bins/1dmh54')
@@ -49,6 +68,7 @@ export class HomeScreen extends React.Component {
         });
         
     }
+
 
 
     GetListViewItem (TENBH) {
@@ -124,7 +144,7 @@ ListViewItemSeparator = () => {
  
     return (
  
-      <View style={styles.MainContainer}>
+      <View style={styles.MainContainer}> 
       <TextInput 
        style={styles.TextInputStyleClass}
        onChangeText={(text) => this.SearchFilterFunction(text)}

@@ -21,7 +21,7 @@ class SearchYoutube extends Component {
         <Button
           buttonStyle={buttonStyle}
           title={this.props.loading ? 'Loading...' : 'Search'}
-          onPress={() => this.props.onPressSearch(this.state.term)}
+          onPress={() => this.props.onPressSearch(this.state.term +' karaoke')} 
         />
       </View>
     );
