@@ -2,6 +2,7 @@ import {HomeScreen} from "./HomeScreen.js"
 import {SettingScreen} from "./SettingScreen.js" 
 import {AssetExample} from "./AssetExample.js"
 import {IntroScreen} from "./IntroScreen.js" 
+//import {Mp3PlayerScreen} from "./mp3Player" 
 
 import {YoutubePlayerScreen} from "./YoutubePlayerScreen.js"
 import React from 'react';
@@ -45,6 +46,7 @@ export const AppNavigator = createStackNavigator(
              })
     }, 
     YoutubePlayer: YoutubePlayerScreen,
+    //Mp3Player: Mp3PlayerScreen,
     Intro: IntroScreen,
   },
    
