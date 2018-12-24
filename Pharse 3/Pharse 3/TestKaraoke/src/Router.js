@@ -1,5 +1,6 @@
 import {HomeScreen} from "./HomeScreen.js" 
 import {SettingScreen} from "./SettingScreen.js" 
+import {AssetExample} from "./AssetExample.js"
 import {IntroScreen} from "./IntroScreen.js" 
 
 import {YoutubePlayerScreen} from "./YoutubePlayerScreen.js"
@@ -28,7 +29,16 @@ export const AppNavigator = createStackNavigator(
 			    tabBarIcon:({tintcolor})=>(
         		<Icon name="ios-search" color={tintcolor} size={24}></Icon>
       			)
-    			}}
+          }},
+            AssetExample:{screen:AssetExample,
+              navigationOptions:{
+              tabBarLabel:'Sound Cloud',
+              tabBarIcon:({tintcolor})=>(
+              <Icon name="ios-search" color={tintcolor} size={24}></Icon>
+              )
+          }}
+          
+          
 			}
              ,{
                 tabBarPosition: "bottom"
