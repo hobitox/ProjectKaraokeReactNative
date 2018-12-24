@@ -35,7 +35,7 @@ export const AppNavigator = createStackNavigator(
               navigationOptions:{
               tabBarLabel:'Sound Cloud',
               tabBarIcon:({tintcolor})=>(
-              <Icon name="ios-search" color={tintcolor} size={24}></Icon>
+              <Icon name="ios-play" color={tintcolor} size={24}></Icon>
               )
           }}
           

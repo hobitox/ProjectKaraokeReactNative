@@ -32,7 +32,7 @@ export class SettingScreen extends React.Component {
     const { loading, videos } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: '#ddd' }}>
-        <AppHeader headerText="Tìm kiếm trực tuyến" />
+        <AppHeader headerText="Tìm kiếm karaoke trực tuyến" />
         <SearchYoutube
           loading={loading}
           onPressSearch={this.onPressSearch}

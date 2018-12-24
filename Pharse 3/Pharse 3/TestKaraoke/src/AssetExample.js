@@ -13,6 +13,7 @@ import {
 import {Card} from 'react-native-elements'
 import { WebBrowser } from 'expo';
 import axios from 'axios'; // 0.17.1
+import AppHeader from './components/AppHeader';
 
 // const ds = new ListView.DataSource({
 //   rowHasChanged: (r1, r2) => r1 !== r2,
@@ -74,26 +75,40 @@ export class AssetExample extends Component {
   }
 
   renderItem = ({ item }) => (
-      <TouchableOpacity onPress={() => this._onPress(item)}>
-      <View>
-        <Text>{item.title}</Text>
+    <View>
+      <Card title={null} style={styles.cardStyle}>
         <Image 
-          style={{width: 100, height: 100}}
+          style={{ width: 200, height: 150, alignSelf: 'center' }}
           source={{uri: item.avatar_url}}
-          >
-        </Image>
-      </View>
-    </TouchableOpacity>
+          />
+
+        <View style={styles.contentStyle}>
+          <Text style={styles.titleStyle}>
+            {item.title}
+          </Text>
+          <Button
+            raised
+            title="Play music"
+            icon={{ name: 'play-arrow' }}
+            containerViewStyle={{ marginTop: 10 }}
+            backgroundColor="#E62117"
+            onPress={() => this._onPress(item)}
+          />
+        </View>
+      </Card>
+    </View>   
+    
     
   );
 
   render() {
     console.log(this.state);
     return (
-      <View style={styles.container}>
+      <View style={styles.container} >
           <TextInput
             style={styles.TextInputStyleClass}
             value={this.state.inputValue}
+            
             onChangeText={this._handleTextChange}
             underlineColorAndroid='transparent'
             placeholder="Tìm bài hát"
@@ -120,14 +135,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  TextInputStyleClass:{
-          
+  TextInputStyleClass:{          
     textAlign: 'center',
     height: 40,
     width: 350,
+    marginTop: 15,
     borderWidth: 1,
     borderColor: '#009688',
     borderRadius: 7 ,
     backgroundColor : "#FFFFFF"        
     },
+    cardStyle: {
+      padding: 5
+    },
+    imageStyle: {
+      alignSelf: 'repeat',
+      height: 180
+    },
+    contentStyle: {
+      flex: 1,
+      padding: 5
+    },
+    titleStyle: {
+      fontSize: 12,
+      marginBottom: 5
+    },
+    channelTitleStyle: {
+      fontSize: 11,
+      color: '#777',
+      marginBottom: 5,
+      alignSelf: 'flex-end'
+    },
+    descriptionStyle: {
+      fontSize: 11,
+      alignSelf: 'center'
+    }
 });
