@@ -5,8 +5,8 @@
 - Giáo viên: Mr. Huỳnh Tuấn Anh [Github](https://github.com/anhhna/ "Github")
 - Apk file: 
 ## Giới thiệu :
--Bạn thích hát karaoke? Ứng dụng iKaraoke sẽ giúp bạn điều ấy. Ứng dụng giúp bạn hát karaoke ngay trên điện thoại di động của mình. iKaraoke với kho bài hát rộng lớn và luôn luôn cập nhật.
--Ứng dụng còn giúp bạn tìm kiếm và nghe nhạc online.
+- Bạn thích hát karaoke? Ứng dụng iKaraoke sẽ giúp bạn điều ấy. Ứng dụng giúp bạn hát karaoke ngay trên điện thoại di động của mình. iKaraoke với kho bài hát rộng lớn và luôn luôn cập nhật.
+- Ứng dụng còn giúp bạn tìm kiếm và nghe nhạc online.
 ## Thành viên nhóm :
 - 16520085: Nguyễn Ngọc Duy Bảo
 - 16520068: Nguyễn Xuân Bắc
