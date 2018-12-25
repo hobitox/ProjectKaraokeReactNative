@@ -17,8 +17,19 @@
 - Tìm kiếm dữ liệu bài hát karaoke bạn yêu thích trên youtube thông qua API Youtube
 - Hỗ trợ tìm kiếm và nghe nhạc
 ## Giao diện ứng dụng :
--List song karaoke arirang:
+- List song karaoke arirang:
 <img width="597" alt="screen shot 2018-12-26 at 12 39 49 am" src="https://user-images.githubusercontent.com/36413156/50425714-e7ee5a00-08ae-11e9-8470-ba4e3b3bc192.png">
+- Tìm kiếm bài hát karaoke trên list arirang:
+<img width="597" alt="screen shot 2018-12-26 at 12 40 09 am" src="https://user-images.githubusercontent.com/36413156/50425729-13714480-08af-11e9-84ae-b40ca9ee41fd.png">
+- Tìm kiếm bài hát karaoke thông qua API Youtube:
+<img width="597" alt="screen shot 2018-12-26 at 12 40 14 am" src="https://user-images.githubusercontent.com/36413156/50425753-3ac81180-08af-11e9-8b25-2ef4778154e8.png">
+<img width="597" alt="screen shot 2018-12-26 at 12 40 26 am" src="https://user-images.githubusercontent.com/36413156/50425757-4d424b00-08af-11e9-9096-b2162cf8509e.png">
+- Youtube player:
+<img width="1048" alt="screen shot 2018-12-26 at 12 41 04 am" src="https://user-images.githubusercontent.com/36413156/50425764-63500b80-08af-11e9-8e42-990efa910307.png">
+- Tìm kiếm bài hát mà bạn yêu thích:
+<img width="597" alt="screen shot 2018-12-26 at 12 41 35 am" src="https://user-images.githubusercontent.com/36413156/50425775-7cf15300-08af-11e9-9a69-e325f5db9ec0.png">
+- Màn hình nghe nhạc: 
+<img width="597" alt="screen shot 2018-12-26 at 12 41 45 am" src="https://user-images.githubusercontent.com/36413156/50425779-8ed2f600-08af-11e9-8cbf-372e98257dd0.png">
 
 
 
