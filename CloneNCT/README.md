@@ -11,6 +11,9 @@
 
 ## Thành viên
 - 16520068: Nguyễn Xuân Bắc
+- 16520085: Nguyễn Ngọc Duy Bảo
+- 16520167: Bạch Hải Đăng
+- 16520067: Phan Trọng Ba
 
 ## Chức năng chính
 - Tìm kiếm: Bài hát, Video, Playlist, Karaoke từ Nhaccuatui
