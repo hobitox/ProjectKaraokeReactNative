@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,TextInput, Button,ScrollView,FlatList,Image,Slider} from 'react-native';
 var Sound = require('react-native-sound');
 
+import {connect} from 'react-redux'
 
 
 var whoosh;
@@ -70,7 +71,12 @@ export default class NewPlayerScreen extends Component<Props> {
 			    				color="#841584"
 			    				onPress={this.onPressStart}
 			    			/>
+			    		<Button title="Zoom"
+			    				color="#841584"
+			    				onPress={this.onPressZoom}
+			    			/>
 			   		</View>
+
 					
 		    		
 				</View>
@@ -165,6 +171,9 @@ export default class NewPlayerScreen extends Component<Props> {
 		return time;
 	}
 	
+
+
+
 	
 }
 const styles = StyleSheet.create({

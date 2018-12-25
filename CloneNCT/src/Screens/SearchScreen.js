@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,TextInput, Button,ScrollView,FlatList,Dimensions,TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, View,TextInput, Button,ScrollView,FlatList,Dimensions,TouchableOpacity,ActivityIndicator} from 'react-native';
 const cheerio = require('cheerio-without-node-native')
 import ListSong from '../component/list_song.js'
 import ListSongNgang from '../component/list_song_ngang.js'
@@ -8,12 +8,16 @@ import ListVideoNgang from '../component/list_video_ngang.js'
 import Helper from '../Helper.js'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import SongPlayer from '../component/SongPlayer.js'
+
+import {connect} from 'react-redux'
+
+
 var Sound = require('react-native-sound');
 
 var input='';
 var whoosh;
 
-export default class SearchScreen extends Component<Props> {
+class SearchScreen extends Component<Props> {
 
 
   
@@ -27,7 +31,7 @@ export default class SearchScreen extends Component<Props> {
       searchSongList:[],
       searchVideoList:[],
       searchKaraokeList:[],
-      searchPlayListList:[],
+      searchPlaylistList:[],
 
       myText: 'I\'m ready to get swiped!',
       gestureName: 'none',
@@ -40,19 +44,7 @@ export default class SearchScreen extends Component<Props> {
         'karaoke':false,
         'playlist':false,
       },
-
-
-
-      SongPlayerState:{
-        item:{
-          avatar:'',
-          title:'',
-          singer_name:'',
-        },
-        mp3Source:'',
-      },
       
-
 
       
     };
@@ -62,9 +54,56 @@ export default class SearchScreen extends Component<Props> {
     this.playVideo=this.playVideo.bind(this);
     this.getSearchKaraokeRespone=this.getSearchKaraokeRespone.bind(this);
     this.playKaraoke=this.playKaraoke.bind(this);
+    this.getSearchPlaylistRespone=this.getSearchPlaylistRespone.bind(this);
+    this.playPlaylist=this.playPlaylist.bind(this);
+    this.setCurrentTab=this.setCurrentTab.bind(this);
+    this.addSongToPlayList=this.addSongToPlayList.bind(this);
     
   }
 
+
+  setCurrentTab(tab){
+    this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':false,
+        'karaoke':false,
+        'playlist':false,
+      },
+    });
+    switch (tab) {
+      case 'all':
+        this.setState({currentTab:
+          {
+            all:true,
+          }});
+        break;
+      case 'song':
+        this.setState({currentTab:{
+          song:true,
+        }});
+        break;
+      case 'video':
+        this.setState({currentTab:{
+          video:true,
+        }});
+        break;
+      case 'karaoke':
+        this.setState({currentTab:{
+          karaoke:true,
+        }});
+        break;
+      case 'playlist':
+        this.setState({currentTab:{
+          playlist:true,
+        }});
+        break;
+      default:
+        // statements_def
+        break;
+    }
+  }
   async getSearchSongRespone() {
 
     //console.log('input: ',input);
@@ -99,34 +138,82 @@ export default class SearchScreen extends Component<Props> {
 
     
   }
+  async getSearchPlaylistRespone() {
 
-  returnWhoosh(whooshreturn)
-  {
-    whoosh=whooshreturn;
-    console.log('already get whoosh:',whoosh);
+
+    this.setState({searchPlaylistList:[]});
+    if(input!='')
+    {
+      this.setState({searchPlaylistList:await Helper.getSearchPlaylistRespone(input)});
+    }
+
+    
   }
+
+
   async playSong(item){
     
-    console.log('Pressed Play Song',item.title);
-    //this.setState({
-    //  SongPlayerState:{
-    //    item:item,
-    //    mp3Source:await Helper.getMp3Source(item.link),
-    //}});
-    //console.log(this.state.SongPlayerState);
-    this.props.navigation.navigate('NewPlayer',{'item':item,'mp3Source':await Helper.getMp3Source(item.link),returnWhoosh:this.returnWhoosh.bind(this)});
+    
+        
+    if (!this.props.isLoading) {
+      this.props.dispatch({type:'IS_LOADING_TRUE'});
+      this.props.dispatch({type:'CLEAR_PLAYER'});
+      await Helper.getMp3Source(item.link)
+      .then(returnResult=>{
+        this.props.dispatch({type:'ADD_SONG_TO_FIRST_PLAYLIST',item:item,mp3Source:returnResult});
+        this.props.dispatch({type:'IS_LOADING_FALSE'});
+      })
+  
+      this.props.dispatch({type:'LOAD_SONG'});
+    }
+    
+
+    
+  }
+  async playPlaylist(item){
+    
+        
+    if (!this.props.isLoading) {
+      this.props.dispatch({type:'IS_LOADING_TRUE'});
+      this.props.dispatch({type:'CLEAR_PLAYER'});
+      await Helper.getSongFromPlaylist(item.link)
+      .then(returnResult=> {
+        this.props.dispatch({type:'ADD_PLAYLIST',playList:returnResult});
+        this.props.dispatch({type:'IS_LOADING_FALSE'});
+      });
+  
+      this.props.dispatch({type:'LOAD_SONG'});
+    }
+    
+  }
+  async addSongToPlayList(item){
+    //console.log('add song to playlist',item);
+    this.props.dispatch({type:'IS_LOADING_TRUE'});
+      await Helper.getMp3Source(item.link)
+      .then(returnResult=>{
+        this.props.dispatch({type:'ADD_SONG_TO_PLAYLIST',item:item,mp3Source:returnResult});
+        this.props.dispatch({type:'IS_LOADING_FALSE'});
+      })
   }
   async playVideo(item){
+
+        
+    if (!this.props.isLoading) {
+      this.props.dispatch({type:'PAUSE_SONG'});
+      this.props.navigation.navigate('VideoPlayer',{'item':item,'videoSource':await Helper.getVideoSource(item.link)});
+    }
     
-    console.log('Pressed Play Video',item.title);
-    
-    this.props.navigation.navigate('VideoPlayer',{'item':item,'videoSource':await Helper.getVideoSource(item.link)});
   }
   async playKaraoke(item){
     
-    console.log('Pressed Play Karaoke',item.title);
+    //console.log('Pressed Play Karaoke',item.title);
+        
+    if (!this.props.isLoading) {
+      this.props.dispatch({type:'PAUSE_SONG'});
+  
+      this.props.navigation.navigate('VideoPlayer',{'item':item,'videoSource':await Helper.getVideoSource(item.link)});
+    }
     
-    this.props.navigation.navigate('VideoPlayer',{'item':item,'videoSource':await Helper.getVideoSource(item.link)});
   }
   componentWillMount()
   { 
@@ -154,6 +241,8 @@ export default class SearchScreen extends Component<Props> {
         'all':true,
         'song':false,
         'video':false,
+        'karaoke':false,
+        'playlist':false,
         }
       });
     }
@@ -164,6 +253,32 @@ export default class SearchScreen extends Component<Props> {
         'all':false,
         'song':true,
         'video':false,
+        'karaoke':false,
+        'playlist':false,
+        }
+      });
+    }
+    if(this.state.currentTab.karaoke)
+    {
+      this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':true,
+        'karaoke':false,
+        'playlist':false,
+        }
+      });
+    }
+    if(this.state.currentTab.playlist)
+    {
+      this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':false,
+        'karaoke':true,
+        'playlist':false,
         }
       });
     }
@@ -182,9 +297,48 @@ export default class SearchScreen extends Component<Props> {
         'all':false,
         'song':false,
         'video':true,
+        'karaoke':false,
+        'playlist':false,
         }
       });
     }
+    if(this.state.currentTab.video)
+    {
+      this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':false,
+        'karaoke':true,
+        'playlist':false,
+        }
+      });
+    }
+    if(this.state.currentTab.karaoke)
+    {
+      this.setState({
+      currentTab:{
+        'all':false,
+        'song':false,
+        'video':false,
+        'karaoke':false,
+        'playlist':true,
+        }
+      });
+    }
+    if(this.state.currentTab.playlist)
+    {
+      this.setState({
+      currentTab:{
+        'all':true,
+        'song':false,
+        'video':false,
+        'karaoke':false,
+        'playlist':false,
+        }
+      });
+    }
+
     
   }
  
@@ -226,21 +380,29 @@ export default class SearchScreen extends Component<Props> {
 
             config={config}
             style={{
-              flex: 1,
+              flex: 2,
               backgroundColor: this.state.backgroundColor
             }}
             >
             <View>
+              {this.props.isLoading&&
+                <View>
+                    <ActivityIndicator size="large" color="#00ff00" />
+                </View>
+              }
               <TextInput 
+                placehoder="Tìm kiếm..."
                 onChangeText={(inputtext) => input=inputtext}
+                style={{color:'black',fontWeight: 'bold'}}
                 //value={input}
                 />
               <Button 
                 onPress={()=>{
-                  console.log('Button search pressed');
+                  //console.log('Button search pressed');
                   this.getSearchSongRespone();
                   this.getSearchVideoRespone();
                   this.getSearchKaraokeRespone();
+                  this.getSearchPlaylistRespone();
                   
                 }}
                 title="Search"
@@ -251,50 +413,130 @@ export default class SearchScreen extends Component<Props> {
 
               
 
-              <View>
+              <View style={{backgroundColor: '#e4f1fe'}}>
                 <View 
                 style={{
                   flexDirection:'row',
                   }}>
                 
                   <View style={this.state.currentTab.all?styles.tabViewChosen:styles.tabView}>
-                    <TouchableOpacity onPress={()=>this.setState({currentTab:{all:true}})}>
-                      <Text>Tất cả</Text>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('all')}>
+                      <Text style={styles.tabText}>Tất cả</Text>
                     </TouchableOpacity>
                   </View>
                 
                 
                   <View style={this.state.currentTab.song?styles.tabViewChosen:styles.tabView}>
-                    <TouchableOpacity onPress={()=>this.setState({currentTab:{song:true}})}>
-                      <Text>Bài hát</Text>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('song')}>
+                      <Text style={styles.tabText}>Bài hát</Text>
                     </TouchableOpacity>
                   </View>
                 
                 
                   <View style={this.state.currentTab.video?styles.tabViewChosen:styles.tabView}>
-                    <TouchableOpacity onPress={()=>this.setState({currentTab:{video:true}})}>
-                      <Text>Video</Text>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('video')}>
+                      <Text style={styles.tabText}>Video</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={this.state.currentTab.karaoke?styles.tabViewChosen:styles.tabView}>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('karaoke')}>
+                      <Text style={styles.tabText}>Karaoke</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={this.state.currentTab.playlist?styles.tabViewChosen:styles.tabView}>
+                    <TouchableOpacity onPress={()=>this.setCurrentTab('playlist')}>
+                      <Text style={styles.tabText}>PlayList</Text>
                     </TouchableOpacity>
                   </View>
                 
 
                 </View>
+                {this.props.isShowMiniPlayer&&
+                    <View style={{flexDirection:'row'}}>
+                        <View style={{flex:1}}>
+                        <Button title="Stop"
+                          color="#841584"
+                          onPress={()=>{
+                            this.props.dispatch({type:'STOP_SONG'});
+                          }}
+                        />
+                        </View>
 
+                        <View style={{flex:1}}>
+                        <Button title="Pause"
+                            color="#841584"
+                            onPress={()=>{
+                              this.props.dispatch({type:'PAUSE_SONG'});
+                            }}
+                          />
+                        </View>
+
+                        <View style={{flex:1}}>
+                          <Button title="Start"
+                              color="#841584"
+                              onPress={()=>{
+                                if(this.props.whoosh=='') this.props.dispatch({type:'LOAD_SONG'});
+                                else
+                                  this.props.dispatch({type:'START_SONG'});
+                              }}
+                            />
+                        </View>
+                        <View style={{flex:1}}>
+                        <Button title="Next"
+                            color="#841584"
+                            onPress={()=>{
+                              this.props.dispatch({type:'NEXT'});
+                              this.props.dispatch({type:'LOAD_SONG'});
+                            }}
+                          />
+                        </View>
+                        
+
+                        <View style={{flex:1}}>
+                        <Button
+                          onPress={()=>{
+                            this.props.navigation.navigate('Mp3Player');
+
+                          }}
+                          title="ZOOM"
+                          color="#841584"
+                          />
+                        </View>
+                    </View>
+           
+                }
+                <TouchableOpacity onPress = {() => {this.props.dispatch({type:'CHANGE_MINI_PLAYER'})}}>
+                <View style = {{backgroundColor: '#841584', alignItems: 'center', 
+                                justifyContent: 'center',heiht:10}}
+                       >
+                    <Text style = {{color: 'white'}}>...</Text>
+                </View>
+                </TouchableOpacity>
+
+
+
+
+                 
                 {this.state.currentTab.all&&
                   <ScrollView>
+                  {this.state.searchSongList.length>0?
                     <View>
-                        <Text>Bài hát</Text>
+                        <Text style={styles.labelText}>Bài hát</Text>
                         <FlatList
                         horizontal={true}
                         data={this.state.searchSongList}
                         keyExreactor={(x, i)=>i}
                         renderItem={({item})=>
-                          <ListSongNgang item={item} key={i} onPress={this.playSong}/>
+                          <ListSongNgang item={item} key={i} onPress={this.playSong} onLongPress={this.addSongToPlayList} />
                         }>        
                         </FlatList>
-                    </View>
+                    </View>:
+                    null
+                  }
+
+                  {this.state.searchVideoList.length>0?
                     <View>
-                        <Text>Video</Text>
+                        <Text style={styles.labelText}>Video</Text>
                         <FlatList
                         horizontal={true}
                         data={this.state.searchVideoList}
@@ -303,9 +545,13 @@ export default class SearchScreen extends Component<Props> {
                           <ListVideoNgang item={item} key={i} onPress={this.playVideo}/>
                         }>        
                         </FlatList>
-                    </View>
+                    </View>:
+                    null
+                  }
+
+                  {this.state.searchKaraokeList.length>0?
                     <View>
-                        <Text>Karaoke</Text>
+                        <Text style={styles.labelText}>Karaoke</Text>
                         <FlatList
                         horizontal={true}
                         data={this.state.searchKaraokeList}
@@ -314,74 +560,97 @@ export default class SearchScreen extends Component<Props> {
                           <ListVideoNgang item={item} key={i} onPress={this.playKaraoke}/>
                         }>        
                         </FlatList>
-                    </View>
+                    </View>:
+                    null
+                  }
+                    
+
+                  {this.state.searchPlaylistList.length>0?
+                    <View>
+                        <Text style={styles.labelText}>PlayList</Text>
+                        <FlatList
+                        horizontal={true}
+                        data={this.state.searchPlaylistList}
+                        keyExreactor={(x, i)=>i}
+                        renderItem={({item})=>
+                          <ListVideoNgang item={item} key={i} onPress={this.playPlaylist}/>
+                        }>        
+                        </FlatList>
+                    </View>:
+                    null
+                  }  
+                    
+                    
                   </ScrollView>
                 } 
                 {this.state.currentTab.song&&
                   <View>
-                    
+                  {this.state.searchSongList.length>0?
                     <View>
                       <FlatList
                       data={this.state.searchSongList}
                       keyExreactor={(x, i)=>i}
                       renderItem={({item})=>
-                        <ListSong item={item} key={i} onPress={this.playSong}/>
+                        <ListSong item={item} key={i} onPress={this.playSong} onLongPress={this.addSongToPlayList}/>
                       }>        
                       </FlatList>
-                      </View>
-                    
+                    </View>:
+                    null
+                  }
                   </View>
                 } 
                 {this.state.currentTab.video&&
                   <View>
-                    
+                  {this.state.searchVideoList.length>0?
                     <View>
                       <FlatList
-                    data={this.state.searchVideoList}
-                    keyExreactor={(x, i)=>i}
-                    renderItem={({item})=>
-                      <ListSong item={item} key={i} onPress={this.playVideo}/>
-                    }>        
-                    </FlatList>
-                    </View>
-                    
+                        data={this.state.searchVideoList}
+                        keyExreactor={(x, i)=>i}
+                        renderItem={({item})=>
+                          <ListSong item={item} key={i} onPress={this.playVideo}/>
+                        }>        
+                      </FlatList>
+                    </View>:
+                    null
+                  }
                   </View>
-                  
+                }
+                {this.state.currentTab.karaoke&&
+                  <View>
+                  {this.state.searchKaraokeList.length>0?
+                    <View>
+                      <FlatList
+                        data={this.state.searchKaraokeList}
+                        keyExreactor={(x, i)=>i}
+                        renderItem={({item})=>
+                          <ListSong item={item} key={i} onPress={this.playVideo}/>
+                        }>        
+                      </FlatList>
+                    </View>:
+                    null
+                  }
+                  </View>
+                }
+                {this.state.currentTab.playlist&&
+                  <View>
+                  {this.state.searchPlaylistList.length>0?
+                    <View>
+                      <FlatList
+                        data={this.state.searchPlaylistList}
+                        keyExreactor={(x, i)=>i}
+                        renderItem={({item})=>
+                          <ListSong item={item} key={i} onPress={this.playPlaylist}/>
+                        }>        
+                      </FlatList>
+                    </View>:
+                    null
+                  }
+                  </View>
                 }
               </View>
 
 
-              <View style={{bottom:0}}>
-                <View style={{flexDirection:'row'}}>
-                  <Button 
-                  onPress={()=>{
-                    console.log('Button Start pressed');
-                    whoosh.play();
-                    
-                  }}
-                  title="Start"
-                  color="#841584"
-                  />
-                  <Button 
-                  onPress={()=>{
-                    console.log('Button Pause pressed');
-                    whoosh.pause();
-                    
-                  }}
-                  title="Pause"
-                  color="#841584"
-                  />
-                  <Button 
-                  onPress={()=>{
-                    console.log('Button Stop pressed');
-                    whoosh.stop();
-                    
-                  }}
-                  title="Stop"
-                  color="#841584"
-                  />
-                </View>
-              </View> 
+              
 
             
           </GestureRecognizer>
@@ -398,19 +667,48 @@ export default class SearchScreen extends Component<Props> {
  
   }
 }
+
+
+function mapStateToProps(state)
+{
+  return{ 
+    playList:state.playList,
+    whoosh:state.whoosh,
+    isPlaying:state.isPlaying,
+    currentSongNum:state.currentSongNum,
+    isPaused:state.isPaused,
+    state:state,
+    isShowMiniPlayer:state.isShowMiniPlayer,
+    isLoading:state.isLoading,
+    }
+}
+
+export default connect(mapStateToProps)(SearchScreen);
 const styles = StyleSheet.create({
   scene: {
     flex: 1,
   },
   tabView:{
     flex: 1,
-    borderWidth:5,
+    borderWidth:2,
 
   },
   tabViewChosen:{
     flex: 1,
-    borderWidth:5,
-    backgroundColor: 'blue',
+    borderWidth:2,
+    backgroundColor: '#f0f0d6',
 
+  },
+  labelText: {
+    color:'red',
+    fontWeight: 'bold',
+    fontSize: 17,
+
+  },
+  tabText:{
+    color:'#841584',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
   }
 });

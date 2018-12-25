@@ -54,3 +54,30 @@
 
 							</View>
                 	</Modal>
+
+
+
+                	
+for(i=0;i<liList.length;i++)
+	      { 
+	        var temp=liList.get(i).childNodes[1].childNodes[1].childNodes[1].attribs;      
+	        avatar = JSON.stringify(temp);
+	        avatar=avatar.split('"').join('');
+	        avatar=avatar.match(new RegExp(firstvariable + "(.*)" + secondvariable));	        
+	        avatar=avatar[1];
+	        //console.log(avatar);   
+
+	        title=liList.get(i).childNodes[3].childNodes[1].childNodes[0].attribs.title;
+	        link=liList.get(i).childNodes[3].childNodes[1].childNodes[0].attribs.href;
+	        singer_name=liList.get(i).childNodes[3].childNodes[3].childNodes[0].childNodes[0].data;
+
+	        //console.log(title);
+	        listItem=[...listItem,{
+	        	'title':title,
+	        	'link':link,
+	        	'avatar':avatar,
+	        	'singer_name':singer_name,
+	        }];
+
+	        
+	      }
