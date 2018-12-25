@@ -3,7 +3,7 @@
 - Đồ án môn học: Lập trình trên thiết bị di động SE346.J11 Học kì 2018-2019
 - Lớp: SE346.J11 Học kì 2018-2019
 - Giáo viên: Mr. Huỳnh Tuấn Anh [Github](https://github.com/anhhna/ "Github")
-- Apk file: 
+- Apk file: [Download](https://drive.google.com/file/d/1_zjxCBjGTGBx0W1FX5LYCIcM7leO5Qgw/view?usp=sharing)
 ## Giới thiệu :
 - Bạn thích hát karaoke? Ứng dụng iKaraoke sẽ giúp bạn điều ấy. Ứng dụng giúp bạn hát karaoke ngay trên điện thoại di động của mình. iKaraoke với kho bài hát rộng lớn và luôn luôn cập nhật.
 - Ứng dụng còn giúp bạn tìm kiếm và nghe nhạc online.
