@@ -3,7 +3,8 @@
 - Đồ án môn học: Lập trình trên thiết bị di động SE346.J11 Học kì 2018-2019
 - Lớp: SE346.J11 Học kì 2018-2019
 - Giáo viên: Mr. Huỳnh Tuấn Anh [Github](https://github.com/anhhna/ "Github")
-- Link Drive file APk:https://drive.google.com/file/d/14CyZS1GcypA276Kq-itQ6F0JwDPJb7p6/view?usp=sharing
+- File APK : [Dowload](https://https://drive.google.com/file/d/14CyZS1GcypA276Kq-itQ6F0JwDPJb7p6/view?usp=sharing)
+
 
 ## Giới thiệu
 - Tại sao lại là Clone NCT?
