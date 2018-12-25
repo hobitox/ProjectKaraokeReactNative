@@ -10,7 +10,8 @@ StatusBar.setHidden(true);
 const API_KEY="AIzaSyBdbtMyB2J3wjA3SIrpvBTwL4UrCpXs1uc";
 
 export class SettingScreen extends React.Component {
-	
+  
+  
   state = {
     loading: false,
     videos: []

@@ -2,13 +2,13 @@ import {HomeScreen} from "./HomeScreen.js"
 import {SettingScreen} from "./SettingScreen.js" 
 import {AssetExample} from "./AssetExample.js"
 import {IntroScreen} from "./IntroScreen.js" 
-//import {Mp3PlayerScreen} from "./mp3Player" 
+import {Mp3PlayerScreen} from "./mp3Player.js" 
 
 import {YoutubePlayerScreen} from "./YoutubePlayerScreen.js"
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {createStackNavigator,createBottomTabNavigator} from "react-navigation";
+import {createStackNavigator,createBottomTabNavigator, HeaderBackButton} from "react-navigation";
 
 
 export const AppNavigator = createStackNavigator(
@@ -36,17 +36,19 @@ export const AppNavigator = createStackNavigator(
               tabBarLabel:'Sound Cloud',
               tabBarIcon:({tintcolor})=>(
               <Icon name="ios-play" color={tintcolor} size={24}></Icon>
-              )
+              )             
           }}
           
           
 			}
              ,{
-                tabBarPosition: "bottom"
-             })
+                tabBarPosition: "bottom",
+              
+             }),
+
     }, 
     YoutubePlayer: YoutubePlayerScreen,
-    //Mp3Player: Mp3PlayerScreen,
+    Mp3Player: Mp3PlayerScreen,
     Intro: IntroScreen,
   },
    

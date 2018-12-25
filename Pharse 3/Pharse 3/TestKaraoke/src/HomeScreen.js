@@ -14,7 +14,9 @@ const API_KEY="AIzaSyBdbtMyB2J3wjA3SIrpvBTwL4UrCpXs1uc";
 
 
 export class HomeScreen extends React.Component {
-
+  static navigationOptions = {
+    header: null
+  }
   constructor(props) {
    
       super(props);

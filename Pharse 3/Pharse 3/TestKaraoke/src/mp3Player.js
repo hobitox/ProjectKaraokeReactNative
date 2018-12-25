@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Platform, StyleSheet, Text, View,TextInput, Button,ScrollView,FlatList,Image,Slider} from 'react-native';
-var Sound = require('react-native-sound');
+import { BackHandler } from 'react-native';
 
+const soundObject = new Expo.Audio.Sound();
 
-
-var whoosh;
-export default class Mp3PlayerScreen extends Component<Props> {
-
+var refresh;
+export class Mp3PlayerScreen extends React.Component {
+	
 	constructor(props) {
 	  super(props);
 	
@@ -27,8 +27,7 @@ export default class Mp3PlayerScreen extends Component<Props> {
 	componentWillMount()
 	{	
 
-		Sound.setCategory('Playback');
-		console.log('getParam tu Home',this.props.navigation.getParam('	'));
+		console.log('getParam tu Home');
 		this.setState({
 			mp3Source:this.props.navigation.getParam('mp3Source'),
 		  	avatar:this.props.navigation.getParam('item').avatar_url,
@@ -41,8 +40,12 @@ export default class Mp3PlayerScreen extends Component<Props> {
 	}
 	render(){
 		return(
-				<View>
+				<View style={styles.container}>
 					<Text>{this.state.title}</Text>
+					<Image 
+          				style={{ width: 200, height: 150, alignSelf: 'center' }}
+          				source={{uri: this.state.avatar}}
+          				/>
 					<Text>{this.state.singer_name}</Text>
 					
 			   		<Text>Time {this.state.currentTime}/{this.secondToTime(Math.round(this.state.duration))}</Text>
@@ -69,6 +72,10 @@ export default class Mp3PlayerScreen extends Component<Props> {
 			    				color="#841584"
 			    				onPress={this.onPressStart}
 			    			/>
+						<Button title="Back"
+			    				color="#841584"
+			    				onPress={() => this.props.navigation.goBack()}
+			    			/>
 			   		</View>
 					
 		    		
@@ -81,54 +88,50 @@ export default class Mp3PlayerScreen extends Component<Props> {
 		this.loadMp3();
 		//this.onPressStart();
 	}
+	componentWillUnmount(){
+		clearInterval(refresh);
+		soundObject.unloadAsync();
+	}
 
-
-	loadMp3()
+	async loadMp3()
 	{	
 		console.log('load file',this.state.mp3Source);
-		whoosh = new Sound((this.state.mp3Source), Sound.MAIN_BUNDLE, (error) => {
-		  if (error) {
-		    console.log('failed to load the sound', error);
-		    return;
-		  }
-		  // loaded successfully
-		  console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
-		  this.onPressStart();
-		});
+		try {
+			await soundObject.loadAsync({uri:this.state.mp3Source});
+			await soundObject.playAsync();
+			// Your sound is playing!
+		  } catch (error) {
+			  console.log('error playing',error);
+``		  }
+		this.TimerTest();
+		
+		
 	}
 	seekTo(value)
 	{
-		whoosh.setCurrentTime(value);
+		soundObject.setPositionAsync(value);
+
 	}
 	onPressPause()
 	{
 		console.log('Pause Pressed');
-		whoosh.pause();
+		
+		soundObject.pauseAsync()
+		.then(Response=>console.log(Response));
+
 		
 	}
 
 	onPressStop()
 	{	
-		whoosh.stop();
+		soundObject.stopAsync()
+
 	}
-	
 	onPressStart()
 	{	
-		this.TimerTest();
-		console.log('Start Pressed');
-			
-		whoosh.play((success) => {
-		  if (success) {
-		    console.log('successfully finished playing');
-		  } else {
-		    console.log('playback failed due to audio decoding errors');
-		    // reset the player to its uninitialized state (android only)
-		    // this is the only option to recover after an error occured and use the player again
-		    whoosh.reset();
-		  }
-		});
-		this.setState({duration:whoosh.getDuration()});
 		
+		soundObject.playAsync();
+
 	}
 	TimerTest()
 	{	
@@ -137,12 +140,18 @@ export default class Mp3PlayerScreen extends Component<Props> {
 				this.getInfo();
 			}
 			, 1000);
-		
-		
 	}
 	getInfo() {
 		try {
-			whoosh.getCurrentTime((seconds) =>this.setState({currentTime:this.secondToTime(Math.round(seconds)),sliderValue:seconds}));    
+			soundObject.getStatusAsync()
+			.then(respone=>{ 
+				this.setState({
+					currentTime: respone.positionMillis,
+					duration: respone.durationMillis,
+					sliderValue: respone.positionMillis,
+
+				});
+			});
 
 			    	
 			    
@@ -153,14 +162,18 @@ export default class Mp3PlayerScreen extends Component<Props> {
 	}
 	secondToTime(seconds)
 	{
-		var time=seconds%60;
-		time=(seconds-time)/60+':'+time%60;
+		var time=seconds%1000;
+		time=(seconds-time)/1000+':'+time%1000;
 		return time;
 	}
 	
 	
 }
 const styles = StyleSheet.create({
+	container: {
+		alignItems: 'center',
+		justifyContent: 'center',
+	  },
   Avatar: {
     width: 120,
     height: 120

@@ -71,7 +71,10 @@ export class AssetExample extends Component {
   _onPress(item) {
     console.log('press item', item);
     var url = item.stream_url + '?client_id=5nPOIxNodmiWjvuVLwNZYtaTmEuGVYKy';
-    WebBrowser.openBrowserAsync(url);
+    this.props.navigation.navigate('Mp3Player', {
+      item: item,
+      mp3Source: url,
+    });
   }
 
   renderItem = ({ item }) => (
