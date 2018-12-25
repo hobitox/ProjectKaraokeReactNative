@@ -18,7 +18,7 @@
 - Hỗ trợ tìm kiếm và nghe nhạc
 ## Giao diện ứng dụng :
 -List song karaoke arirang:
- ![list](https://imgur.com/a/5XpIKhR.png)
+ ![](https://imgur.com/a/5XpIKhR)
 -Tìm kiếm bài hát karaoke trên list arirang
 -Tìm kiếm bài hát karaoke thông qua API Youtube
 -Youtube player
