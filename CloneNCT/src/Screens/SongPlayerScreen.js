@@ -67,7 +67,7 @@ export default class SongPlayerScreen extends Component<Props> {
 	}
 	componentWillUnmount()
 	{	
-		console.log('Unmount, stop play');
+		//console.log('Unmount, stop play');
 		SoundPlayer.stop();
 	  	
 	}
@@ -76,12 +76,12 @@ export default class SongPlayerScreen extends Component<Props> {
 
 	onPressPause()
 	{
-		console.log('Pause Pressed');
+		//console.log('Pause Pressed');
 		SoundPlayer.pause();
 	}
   	onPressResume()
 	{
-		console.log('Start Pressed');
+		//console.log('Start Pressed');
 		SoundPlayer.resume();
 	}
 	onPressStop()
@@ -89,7 +89,7 @@ export default class SongPlayerScreen extends Component<Props> {
 		{		
 			clearInterval(refresh);
 		}
-		console.log('Stop Pressed');
+		//console.log('Stop Pressed');
 		SoundPlayer.stop();
 		
 	}
@@ -97,7 +97,7 @@ export default class SongPlayerScreen extends Component<Props> {
 	onPressStart()
 	{	
 		//this.TimerTest();
-		console.log('Start Pressed');
+		//console.log('Start Pressed');
 		SoundPlayer.playUrl(this.state.mp3Source);
 	}
 	TimerTest()
@@ -114,10 +114,10 @@ export default class SongPlayerScreen extends Component<Props> {
 	async getInfo() { // You need the keyword `async`
     try {
       const info = await SoundPlayer.getInfo() // Also, you need to await this because it is async
-      console.log('getInfo', info) // {duration: 12.416, currentTime: 7.691}
+      //console.log('getInfo', info) // {duration: 12.416, currentTime: 7.691}
       this.setState({currentTime:info.currentTime,duration:info.duration});
     } catch (e) {
-      console.log('There is no song playing', e)
+      //console.log('There is no song playing', e)
     	}
 
 	}

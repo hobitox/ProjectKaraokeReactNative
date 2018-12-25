@@ -11,7 +11,7 @@ export default class ListSongNgang extends Component<Props>{
 	render(){
 		return(
 
-			<TouchableOpacity onPress={()=> {this.props.onPress(this.props.item)}}>
+			<TouchableOpacity onPress={()=> {this.props.onPress(this.props.item)}} onLongPress={()=>this.props.onLongPress(this.props.item)}>
 				
 				<View style={styles.SongItemContainer}>
 					<Image
@@ -19,9 +19,9 @@ export default class ListSongNgang extends Component<Props>{
 			          source={{uri: this.props.item.avatar||'https://stc-id.nixcdn.com/v11/images/avatar_default.jpg'}}
 			        />
 			        
-			        <View>
-						<Text>{this.props.item.title}</Text>
-						<Text>{this.props.item.singer_name}</Text>
+			        <View  style={{marginLeft:5}}>
+						<Text style={styles.TieuDe}>{this.props.item.title}</Text>
+						<Text style={styles.CaSi}>{this.props.item.singer_name}</Text>
 					</View>
 				</View>
 
@@ -46,5 +46,12 @@ const styles = StyleSheet.create({
   },
   TextContent:{
   	flexDirection:'column'
+  },
+  TieuDe:{
+  	color:'black',
+    fontWeight: 'bold',
+  },
+  CaSi:{
+  	color:'black'
   }
 });

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,TouchableOpacity,Image} from 'react-native';
 
-export default class ListVideoNgang extends Component<Props>{
+export default class ListSongPlayList extends Component<Props>{
 	constructor(props) {
 	  super(props);
 	
@@ -11,15 +11,15 @@ export default class ListVideoNgang extends Component<Props>{
 	render(){
 		return(
 
-			<TouchableOpacity onPress={()=> {this.props.onPress(this.props.item)}}>
+			<TouchableOpacity onPress={()=> {this.props.onPress(this.props.itemkey)}}>
 				
-				<View style={styles.VideoItemContainer}>
+				<View style={(this.props.currentSong==this.props.itemkey)?styles.SongItemContainerPlaying:styles.SongItemContainerNonPlaying}>
 					<Image
 			         style={styles.Avatar}
-			          source={{uri: this.props.item.avatar||'https://stc-id.nixcdn.com/v11/images/video-default.jpg'}}
+			          source={{uri: this.props.item.avatar||'https://stc-id.nixcdn.com/v11/images/avatar_default.jpg'}}
 			        />
 			        
-			        <View style={{marginLeft:5}}>
+			        <View  style={{marginLeft:5}}>
 						<Text style={styles.TieuDe}>{this.props.item.title}</Text>
 						<Text style={styles.CaSi}>{this.props.item.singer_name}</Text>
 					</View>
@@ -37,12 +37,15 @@ export default class ListVideoNgang extends Component<Props>{
 const styles = StyleSheet.create({
   Avatar: {
     width: 120,
-    height: 120
+    height:120
   },
-  VideoItemContainer:{
-  	flexDirection:'column',
-  	width: 120,
-    height: 200,
+  SongItemContainerNonPlaying:{
+  	flexDirection:'row',
+  	backgroundColor: '#e4f1fe'
+  },
+  SongItemContainerPlaying:{
+  	flexDirection:'row',
+  	backgroundColor: '#3498db'
   },
   TextContent:{
   	flexDirection:'column'

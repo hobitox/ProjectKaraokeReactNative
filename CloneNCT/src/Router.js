@@ -6,6 +6,7 @@ import HomeScreen from "./Screens/HomeScreen.js";
 import NewPlayerScreen from "./Screens/NewPlayerScreen.js";
 import VideoPlayerScreen from "./Screens/VideoPlayerScreen.js"
 import SearchScreen from "./Screens/SearchScreen.js"
+import Mp3PlayerScreen from "./Screens/Mp3PlayerScreen.js"
 
 
 
@@ -25,12 +26,13 @@ export const RootStack = createStackNavigator(
         	}
     },
     Search:SearchScreen,
+    Mp3Player:Mp3PlayerScreen,
 
 
     
   },
   {
-    initialRouteName: "Search",
+    initialRouteName: "Home",
   }
 );
 

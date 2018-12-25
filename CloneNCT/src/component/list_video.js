@@ -19,7 +19,7 @@ export default class ListVideo extends Component<Props>{
 			          source={{uri: this.props.item.avatar||'https://stc-id.nixcdn.com/v11/images/video-default.jpg'}}
 			        />
 			        
-			        <View>
+			        <View  style={{marginLeft:5}}>
 						<Text>{this.props.item.title}</Text>
 						<Text>{this.props.item.singer_name}</Text>
 					</View>
